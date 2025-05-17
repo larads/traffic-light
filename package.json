@@ -13,8 +13,12 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@expo-google-fonts/poppins": "^0.3.1",
     "@expo/vector-icons": "^14.1.0",
     "@react-navigation/native": "^7.1.6",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "expo": "~53.0.9",
     "expo-font": "~13.3.1",
     "expo-linking": "~7.1.5",
@@ -23,13 +27,17 @@
     "expo-status-bar": "~2.2.3",
     "expo-system-ui": "~5.0.7",
     "expo-web-browser": "~14.1.6",
+    "lucide-react-native": "^0.511.0",
+    "nativewind": "^4.0.1",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-native": "0.79.2",
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.10.0",
-    "react-native-web": "~0.20.0"
+    "react-native-web": "~0.20.0",
+    "tailwind-merge": "^3.3.0",
+    "tailwindcss": "3.3.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
