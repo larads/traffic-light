@@ -46,7 +46,7 @@ export default function Index() {
               isLoading={false}
               className="mt-6"
               opacity="default"
-              onPress={() => router.navigate('/(home)')}
+              onPress={() => router.navigate('/(login)')}
             />
           </View>
         </View>
