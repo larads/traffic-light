@@ -1,7 +1,9 @@
 import { Button } from '@/components/button'
 import { ButtonBack } from '@/components/button/button-back'
+import { Input } from '@/components/input'
 import { colors } from '@/styles/colors'
 import { router } from 'expo-router'
+import { useState } from 'react'
 
 import {
   KeyboardAvoidingView,
@@ -10,10 +12,13 @@ import {
   ScrollView,
   StatusBar,
   Text,
-  View
+  View,
 } from 'react-native'
 
 export default function Login() {
+  const [matricula, setMatricula] = useState('')
+  const [senha, setSenha] = useState('')
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar
@@ -31,22 +36,42 @@ export default function Login() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <View className="px-4 py-6">
+          <View className="px-4 py-6 mb-10">
             <ButtonBack onPress={() => router.back()} />
           </View>
-          <View className="bg-white/20 flex-1 px-6 mt-10 rounded-t-3xl">
-           <View className="w-full">
+
+          <View className="bg-white/20 flex-1 px-6 rounded-3xl">
+            <View className="w-full py-6">
               <Text
-                className={`text-4xl font-bold text-[${colors.traffic.main}] mb-2 mt-4`}
+                className={`text-3xl font-bold text-[${colors.traffic.main}] mb-6`}
               >
-                Coloque sua Matricula e senha.
+                Bem-vindo de volta!
               </Text>
+
+              <Input
+                label="Matrícula"
+                placeholder="Digite sua matrícula"
+                value={matricula}
+                onChangeText={setMatricula}
+                keyboardType="numeric"
+                className="mb-4"
+              />
+
+              <Input
+                label="Senha"
+                placeholder="Digite sua senha"
+                value={senha}
+                onChangeText={setSenha}
+                secureTextEntry
+                className="mb-6"
+              />
+
               <Button
                 label="Entrar"
                 variant="default"
                 size="lg"
                 isLoading={false}
-                className="mt-6"
+                className="mt-2"
                 opacity="default"
                 onPress={() => router.navigate('/(home)')}
               />
