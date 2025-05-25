@@ -1,7 +1,7 @@
 import { Slot } from "expo-router"
 import { ImageBackground, Platform, StatusBar } from "react-native"
 
-export default function LoginLayout() {
+export default function EmergencyLayout() {
     return (
         <ImageBackground
             source={require('@/assets/background.jpg')}

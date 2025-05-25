@@ -1,55 +1,46 @@
 import { Button } from '@/components/button'
-import * as Location from 'expo-location'
+import { EmergencyViewModel } from '@/viewmodels/emergency-view-models'
 import { router } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { Alert, StatusBar, Text, View } from 'react-native'
 
 export default function Emergency() {
-  const [location, setLocation] = useState<Location.LocationObject | null>(null)
-  const [errorMsg, setErrorMsg] = useState<string | null>(null)
-  const [isRequesting, setIsRequesting] = useState(false)
+  const [viewModel] = useState(() => new EmergencyViewModel())
+  const [isInitialized, setIsInitialized] = useState(false)
 
   useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync()
-      if (status !== 'granted') {
-        setErrorMsg('Permissão para acessar localização foi negada')
-        return
+    const initLocation = async () => {
+      try {
+        await viewModel.initializeLocation()
+        setIsInitialized(true)
+      } catch (error) {
+        console.error('Erro ao inicializar localização:', error)
       }
+    }
 
-      let location = await Location.getCurrentPositionAsync({})
-      setLocation(location)
-      console.log('Localização atual:', {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        timestamp: new Date(location.timestamp).toLocaleString()
-      })
-    })()
+    initLocation()
   }, [])
 
   const handleEmergencyRequest = async () => {
-    setIsRequesting(true)
-    
-    // Simulate checking nearby traffic lights
-    const nearbyTrafficLight = {
-      id: 'TL001',
-      status: 'red',
-      distance: '50m',
-      street: 'Rua Principal'
-    }
-
-    console.log('Verificando semáforo próximo:', nearbyTrafficLight)
-    
-    // Simulate emergency request
-    setTimeout(() => {
+    try {
+      const response = await viewModel.requestEmergencyPassage()
       Alert.alert(
         'Solicitação de Emergência',
-        `Semáforo ${nearbyTrafficLight.id} na ${nearbyTrafficLight.street} será alterado para verde em 10 segundos.`,
+        response.message,
         [{ text: 'OK' }]
       )
-      setIsRequesting(false)
-    }, 2000)
+    } catch (error) {
+      Alert.alert(
+        'Erro',
+        'Não foi possível solicitar a passagem de emergência. Tente novamente.'
+      )
+    }
   }
+
+  const location = viewModel.getFormattedLocation()
+  const errorMsg = viewModel.getError()
+  const isRequesting = viewModel.getIsRequesting()
+  const lastRequest = viewModel.getLastRequest()
 
   return (
     <View className="flex-1">
@@ -64,21 +55,36 @@ export default function Emergency() {
           Solicitar Passagem
         </Text>
 
-        <View className="bg-white/80 p-4 rounded-xl border-2 border-[#2e2b09] mb-6">
+        <View className="bg-gray-50 p-4 rounded-lg mb-6">
           <Text className="text-lg font-medium text-gray-800 mb-2">
             Status da Localização:
           </Text>
           {errorMsg ? (
             <Text className="text-red-500">{errorMsg}</Text>
+          ) : !isInitialized ? (
+            <Text className="text-gray-600">Inicializando localização...</Text>
           ) : location ? (
             <Text className="text-gray-600">
-              Latitude: {location.coords.latitude.toFixed(6)}{'\n'}
-              Longitude: {location.coords.longitude.toFixed(6)}
+              Latitude: {location.latitude}{'\n'}
+              Longitude: {location.longitude}
             </Text>
           ) : (
             <Text className="text-gray-600">Obtendo localização...</Text>
           )}
         </View>
+
+        {lastRequest && (
+          <View className="bg-green-50 p-4 rounded-lg mb-6">
+            <Text className="text-lg font-medium text-gray-800 mb-2">
+              Última Solicitação:
+            </Text>
+            <Text className="text-gray-600">
+              Semáforo: {lastRequest.trafficLightId}{'\n'}
+              Rua: {lastRequest.street}{'\n'}
+              Status: {lastRequest.status}
+            </Text>
+          </View>
+        )}
 
         <View className="flex-1 justify-center">
           <Button
@@ -88,6 +94,7 @@ export default function Emergency() {
             isLoading={isRequesting}
             className="mb-4"
             onPress={handleEmergencyRequest}
+            disabled={!location || isRequesting}
           />
 
           <Button
@@ -100,4 +107,4 @@ export default function Emergency() {
       </View>
     </View>
   )
-} 
+}
