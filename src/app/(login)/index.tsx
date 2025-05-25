@@ -1,84 +1,81 @@
 import { Button } from '@/components/button'
-import { ButtonBack } from '@/components/button/button-back'
-import { Input } from '@/components/input'
-import { colors } from '@/styles/colors'
 import { router } from 'expo-router'
 import { useState } from 'react'
-
-import {
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  Text,
-  View,
-} from 'react-native'
+import { KeyboardAvoidingView, Platform, StatusBar, Text, TextInput, View } from 'react-native'
 
 export default function Login() {
   const [matricula, setMatricula] = useState('')
   const [senha, setSenha] = useState('')
+  const [error, setError] = useState('')
+
+  const handleLogin = () => {
+    if (matricula === '123' && senha === '123') {
+      router.push('/(emergency)')
+    } else {
+      setError('Matrícula ou senha inválida')
+    }
+  }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+    >
       <StatusBar
         barStyle="dark-content"
-        translucent
         backgroundColor="transparent"
+        translucent
       />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
-      >
-        <ScrollView
-          contentContainerStyle={{ flexGrow: 1 }}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          <View className="px-4 py-6 mb-10">
-            <ButtonBack onPress={() => router.back()} />
+      <View className="flex-1 px-6 justify-center">
+        <Text className="text-3xl font-bold text-center mb-8 text-[#2e2b09]">
+          Login de Emergência
+        </Text>
+
+        <View className="space-y-4">
+          <View>
+            <Text className="text-lg font-medium text-white mb-1">Matrícula</Text>
+            <TextInput
+              className="w-full px-4 py-3 border bg-white border-gray-300 rounded-lg focus:border-[#2e2b09] mb-4"
+              placeholder="Digite sua matrícula"
+              value={matricula}
+              onChangeText={setMatricula}
+              keyboardType="numeric"
+            />
           </View>
 
-          <View className="bg-white/20 flex-1 px-6 rounded-3xl">
-            <View className="w-full py-6">
-              <Text
-                className={`text-3xl font-bold text-[${colors.traffic.main}] mb-6`}
-              >
-                Bem-vindo de volta!
-              </Text>
-
-              <Input
-                label="Matrícula"
-                placeholder="Digite sua matrícula"
-                value={matricula}
-                onChangeText={setMatricula}
-                keyboardType="numeric"
-                className="mb-4"
-              />
-
-              <Input
-                label="Senha"
-                placeholder="Digite sua senha"
-                value={senha}
-                onChangeText={setSenha}
-                secureTextEntry
-                className="mb-6"
-              />
-
-              <Button
-                label="Entrar"
-                variant="default"
-                size="lg"
-                isLoading={false}
-                className="mt-2"
-                opacity="default"
-                onPress={() => router.navigate('/(home)')}
-              />
-            </View>
+          <View>
+            <Text className="text-lg font-medium text-white mb-1">Senha</Text>
+            <TextInput
+              className="w-full px-4 py-3 border bg-white border-gray-300 rounded-lg focus:border-[#2e2b09]"
+              placeholder="Digite sua senha"
+              value={senha}
+              onChangeText={setSenha}
+              secureTextEntry
+            />
           </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+
+          {error ? (
+            <Text className="text-red-500 text-lg font-bold ml-2">{error}</Text>
+          ) : null}
+
+          <Button
+            label="Entrar"
+            variant="default"
+            size="lg"
+            className="mt-6"
+            onPress={handleLogin}
+          />
+
+          <Button
+            size="lg"
+            label="Voltar"
+            variant="outline"
+            className="mt-2"
+            onPress={() => router.back()}
+          />
+        </View>
+      </View>
+    </KeyboardAvoidingView>
   )
-}
+} 

@@ -40,13 +40,13 @@ export default function Index() {
 
           <View className="flex-1 justify-center items-center mt-8">
             <Button
-              label="Vamos lá"
+              label="Acessar Sistema"
               variant="default"
               size="lg"
               isLoading={false}
               className="mt-6"
               opacity="default"
-              onPress={() => router.navigate('/(login)')}
+              onPress={() => router.push('/(login)')}
             />
           </View>
         </View>
