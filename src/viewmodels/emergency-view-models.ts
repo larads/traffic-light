@@ -55,28 +55,27 @@ export class EmergencyViewModel {
       throw new Error('Localização não disponível')
     }
 
-    this.state.isRequesting = true
-    
-    try {
-      const response = await emergencyService.requestEmergencyPassage({
-        latitude: this.state.location.coords.latitude,
-        longitude: this.state.location.coords.longitude,
-        timestamp: new Date().toISOString()
-      })
+    const response = await emergencyService.requestEmergencyPassage({
+      latitude: this.state.location.coords.latitude,
+      longitude: this.state.location.coords.longitude,
+      timestamp: new Date().toISOString()
+    })
 
-      this.state.lastRequest = {
-        trafficLightId: response.trafficLightId,
-        street: response.street,
-        status: response.status
-      }
-
-      return response
-    } catch (error) {
-      console.error('Erro ao solicitar passagem:', error)
-      throw error
-    } finally {
-      this.state.isRequesting = false
+    this.state.lastRequest = {
+      trafficLightId: response.trafficLightId,
+      street: response.street,
+      status: response.status
     }
+
+    return response
+  }
+
+  async logEmergencyClick(timestamp: string) {
+    await emergencyService.logEmergencyClick(timestamp)
+  }
+
+  setIsRequesting(value: boolean) {
+    this.state.isRequesting = value
   }
 
   getLocation() {

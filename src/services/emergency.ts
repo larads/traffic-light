@@ -22,31 +22,27 @@ const FAKE_TRAFFIC_LIGHTS = [
 
 export const emergencyService = {
   async requestEmergencyPassage(location: EmergencyRequest): Promise<EmergencyResponse> {
+    const randomTrafficLight = FAKE_TRAFFIC_LIGHTS[Math.floor(Math.random() * FAKE_TRAFFIC_LIGHTS.length)];
+    
+    const fakeResponse = {
+      success: true,
+      trafficLightId: randomTrafficLight.id,
+      street: randomTrafficLight.street,
+      status: 'green',
+      message: `Semáforo ${randomTrafficLight.id} na ${randomTrafficLight.street} será alterado para verde em 10 segundos.`
+    };
+
+    return fakeResponse;
+  },
+
+  async logEmergencyClick(timestamp: string): Promise<void> {
     try {
       await api.post('/traffic-light/log', {
-        timestamp: location.timestamp,
+        timestamp,
         action: 'emergency_button_clicked'
       });
-
-      const randomTrafficLight = FAKE_TRAFFIC_LIGHTS[Math.floor(Math.random() * FAKE_TRAFFIC_LIGHTS.length)];
-      
-      return {
-        success: true,
-        trafficLightId: randomTrafficLight.id,
-        street: randomTrafficLight.street,
-        status: 'green',
-        message: `Semáforo ${randomTrafficLight.id} na ${randomTrafficLight.street} será alterado para verde em 10 segundos.`
-      };
     } catch (error) {
       console.error('Erro ao registrar clique:', error);
-      const randomTrafficLight = FAKE_TRAFFIC_LIGHTS[Math.floor(Math.random() * FAKE_TRAFFIC_LIGHTS.length)];
-      return {
-        success: true,
-        trafficLightId: randomTrafficLight.id,
-        street: randomTrafficLight.street,
-        status: 'green',
-        message: `Semáforo ${randomTrafficLight.id} na ${randomTrafficLight.street} será alterado para verde em 10 segundos.`
-      };
     }
   }
 }; 

@@ -23,17 +23,31 @@ export default function Emergency() {
 
   const handleEmergencyRequest = async () => {
     try {
+      viewModel.setIsRequesting(true)
       const response = await viewModel.requestEmergencyPassage()
       Alert.alert(
         'Solicitação de Emergência',
         response.message,
-        [{ text: 'OK' }]
+        [
+          {
+            text: 'OK',
+            onPress: async () => {
+              try {
+                await viewModel.logEmergencyClick(new Date().toISOString())
+              } catch (error) {
+                console.error('Erro ao registrar clique:', error)
+              }
+            }
+          }
+        ]
       )
     } catch (error) {
       Alert.alert(
         'Erro',
         'Não foi possível solicitar a passagem de emergência. Tente novamente.'
       )
+    } finally {
+      viewModel.setIsRequesting(false)
     }
   }
 
@@ -55,7 +69,7 @@ export default function Emergency() {
           Solicitar Passagem
         </Text>
 
-        <View className="bg-gray-50 p-4 rounded-lg mb-6">
+        <View className="bg-white/80 border-2  border-[#2e2b09] p-4 rounded-lg mb-6">
           <Text className="text-lg font-medium text-gray-800 mb-2">
             Status da Localização:
           </Text>
@@ -107,4 +121,4 @@ export default function Emergency() {
       </View>
     </View>
   )
-}
+} 
